@@ -1,135 +1,205 @@
-/* 
- * File:   main.cpp
- * Author: YOUR NAME HERE
- * Created on DATE AND TIME HERE
- * Purpose:  Even, Odd Vectors and Array Columns Even, Odd
- * Note:  Check out content of Sample conditions in Hacker Rank
- * Input size of integer array, then array, output columns of Even, Odd
- * Vectors then Even, Odd 2-D Array
- */
+//
+//	WAR card game
+//
+//	Described in Chapter 2 of
+//	Data Structures in C++ using the STL
+//	Published by Addison-Wesley, 1997
+//	Written by Tim Budd, budd@cs.orst.edu
+//	Oregon State University
+//
 
-//System Libraries Here
-#include <iostream>//cin,cout
-#include <vector>  //vectors<>
-#include <iomanip> //Format setw(),right
-using namespace std;
+# include <iostream.h>
+# include <algo.h>
 
-//User Libraries Here
+enum suits {diamond, club, heart, spade};
 
-//Global Constants Only, No Global Variables
-//Allowed like PI, e, Gravity, conversions, array dimensions necessary
-const int COLMAX=2;//Only 2 columns needed, even and odd
+class Card {
+public:
+		// constructors
+	Card	( );            // initialize a card with default values
+	Card	(suits, int);   // initialize a card with given values
 
-//Function Prototypes Here
-void read(vector<int> &, vector<int> &);
-void copy(vector<int>, vector<int>,int [][COLMAX]);
-void prntVec(vector<int>, vector<int>,int);//int n is the format setw(n)
-void prntAry(const int [][COLMAX],int,int,int);
+		// data fields
+	int  	rank;           // hold rank of card
+	suits	suit;           // hold suit of card
+};
 
-//Program Execution Begins Here
-int main(int argc, char** argv) {
-    //Declare all Variables Here
-    const int ROW=80;           //No more than 80 rows
-    int array[ROW][COLMAX];     //Really, just an 80x2 array, even vs. odd
-    vector<int> even(0),odd(0); //Declare even,odd vectors
-    
-    //Input data and place even in one vector odd in the other
-    read(even,odd);
-    
-    //Now output the content of the vectors
-    //          setw(10)
-    prntVec(even,odd,10);//Input even, odd vectors with setw(10);
-    
-    //Copy the vectors into the 2 dimensional array
-    copy(even,odd,array);
-    
-    //Now output the content of the array
-    //                              setw(10)
-    prntAry(array,even.size(),odd.size(),10);//Same format as even/odd vectors
-    
-    //Exit
-    return 0;
+Card::Card	( )
+	// initialize a new Card
+	// default value is the ace of spades
+{
+	rank = 1;
+	suit = spade;
 }
 
-//FUNCTION - Read Vector
-void read(vector<int> &even, vector<int> &odd)
+Card::Card 	(suits sv, int rv)
+	// initialize a new Card using the argument values
 {
-    cout << "Input the number of integers to input." << endl;
-    cout << "Input each number." <<endl;
-    int sizeInput;
-    int userInput;
-   
-    cin >> userInput;
-   
-    for(int i = 0; i < userInput; i++)
-   {
-    cin >> sizeInput;
-   
-    if(sizeInput % 2 == 0)
-    {
-        even.push_back(sizeInput);
-    }
-    else
-    {
-        odd.push_back(sizeInput);
-    }
-   }
-
+	rank = rv;
+	suit = sv;
 }
 
-void prntVec(vector<int> even, vector<int> odd, int sizes)
+ostream & operator << (ostream & out, Card & aCard)
+	// output a textual representation of a Card
 {
-   cout << "    Vector      Even       Odd" << endl;
-   if(even.size() > odd.size())
-   {
-      for(int i = 0; i < even.size(); i++)
-        {
-            cout << setw(20) << even.at(i) << setw(sizes);
-           
-            if(i < odd.size())
-            {
-                cout << odd.at(i) << endl;
-            }
-            else
-            cout << " " << endl;
-        }
-   }
-   
-   else
-   {
-       for(int i = 0; i < odd.size(); i++)
-        {
-            if(i < even.size())
-            {
-                cout << setw(20) << even.at(i) << setw(sizes);
-            }
-            else
-            cout << setw(20) << " " << setw(sizes);
-            cout << odd.at(i) << endl;
-                   
-        }
-   }
-   
-}
-   
-   
-void copy(vector<int> even, vector<int> odd,int arr[][COLMAX])
-{
-    for(int i = 0; i < even.size(); i++)
-    {
-        arr[i][COLMAX-1] = even.at(i);
-        arr[i][COLMAX] = odd.at(i);
-    }
+		// first output rank
+	switch (aCard.rank) {
+		case 1:  out << "Ace";   break;
+		case 11: out << "Jack";  break;
+		case 12: out << "Queen"; break;
+		case 13: out << "King";  break;
+		default:	// output number
+			out << aCard.rank; break;
+		}
+
+		// then output suit
+	switch (aCard.suit) {
+		case diamond: out << " of Diamonds"; break;
+		case spade:   out << " of Spades";   break;
+		case heart:   out << " of Hearts";   break;
+		case club:    out << " of Clubs";    break;
+		}
+	return out;
 }
 
-void prntAry(const int arr[][COLMAX],int evenSize,int oddSize, int sizes)
+class randomInteger {
+	public:
+		unsigned int operator () (unsigned int);
+} randomizer;
+
+unsigned int randomInteger::operator () (unsigned int max)
 {
-    cout << "     Array      Even       Odd" << endl;
-    for(int i = 0; i < evenSize; i++)
-    {
-        cout << setw(20);
-        cout << arr[i][COLMAX-1];
-        cout << setw(10);
-        cout << arr[i][COLMAX] << endl;
-     }
+		// rand return random integer
+		// convert to unsigned to make positive
+		// take remainder to put in range
+	unsigned int rval = rand();
+	return rval % max;
+}
+
+class Deck {
+public:
+		// constructor
+	Deck ( );
+
+		// operations
+	void	shuffle ( )
+		{ random_shuffle (cards, cards+52, randomizer); }
+	bool	isEmpty ( )
+		{ return topCard <= 0; }
+	Card	draw ( );
+
+protected:
+	Card	cards[52];
+	int 	topCard;
+};
+
+Deck::Deck ( )
+	// initialize a deck by creating all 52 cards
+{
+	topCard = 0;
+	for (int i = 1; i <= 13; i++) {
+		Card c1(diamond, i), c2(spade, i), c3(heart, i), c4(club, i);
+		cards[topCard++] = c1;
+		cards[topCard++] = c2;
+		cards[topCard++] = c3;
+		cards[topCard++] = c4;	
+		}
+}
+
+Card Deck::draw ( )
+	// return one card from the end of the deck
+{
+	if (! isEmpty())
+		return cards[--topCard];
+	else {	  // otherwise return ace of spades
+		Card spadeAce(spade, 1);
+		return spadeAce;
+		}
+}
+
+class Player {
+public:
+		// constructor
+	Player (Deck &);
+
+		// operations
+	Card	draw ( );
+	void	addPoints (int);
+	int 	score ();
+	void	replaceCard (Deck &);
+
+protected:
+	Card	myCards[3];
+	int 	myScore;
+	int 	removedCard;
+};
+
+Player::Player (Deck & aDeck)
+	// initialize the data fields for a player
+{
+	myScore = 0;
+	for (int i = 0; i < 3; i++)
+		myCards[i] = aDeck.draw();
+	removedCard = 0;
+}
+
+Card Player::draw ( )
+	// return a random card from our hand
+{
+	removedCard = randomizer(3);
+	return myCards[removedCard];
+}
+
+void	Player::addPoints (int howMany)
+	// add the given number of points to the current score
+{
+	myScore += howMany;
+}
+
+int	Player::score ( )
+	// return the current score
+{
+	return myScore;
+}
+
+void	Player::replaceCard (Deck & aDeck)
+	// replace last card played with new card
+{
+	myCards[removedCard] = aDeck.draw();
+}
+
+void main() {
+	Deck theDeck; // create and shuffle the deck
+	theDeck.shuffle();
+
+	Player player1(theDeck); // create the two
+	Player player2(theDeck); // players
+
+		// play until deck is empty
+	while (! theDeck.isEmpty() ) {
+		Card card1  = player1.draw();
+		cout << "Player 1 plays " << card1 << endl;
+		Card card2 = player2.draw();
+		cout << "Player 2 plays " << card2 << endl;
+
+		if (card1.rank == card2.rank) { // tie
+			player1.addPoints(1);
+			player2.addPoints(1);
+			cout << "Players tie\n";
+			}
+		else if (card1.rank > card2.rank) {
+			player1.addPoints(2);
+			cout << "Player 1 wins round\n";
+			}
+		else {
+			player2.addPoints(2);
+			cout << "Player 2 wins round\n";
+			}
+
+			// now replace the cards drawn
+		player1.replaceCard(theDeck);
+		player2.replaceCard(theDeck);
+	}
+	cout << "Player 1 score " << player1.score() << endl;
+	cout << "Player 2 score " << player2.score() << endl;
 }
