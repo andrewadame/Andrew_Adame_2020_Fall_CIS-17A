@@ -19,15 +19,17 @@ using namespace std;
 
 struct decks
 {
-    int rank;           //Rank of Card
-    int deckTotal [52]; //Total Deck Array
-    int s[13];          //Suit Array
-    int deckPlyr [26];  //Player Deck
-    int deckOpp [26];   //Opponent Deck
+    int deckTotal[52];
+    string suit[4] = {"Spades", "Hearts", "Diamonds", "Clubs"};
+    string faceVal[13] = {"Ace", "Two", "Three", "Four", "Five", "Six", "Seven", 
+    "Eight", "Nine", "Ten", "Jack", "Queen", "King"};
+    int plyrScore;
+    int oppScore;
 };
        
 void deckInt(decks&);
-void disDeck(decks&);
+string getCrd();
+void gmeStrt(decks&);
 int main(int argc, char** argv) 
 {
     decks t[52];
@@ -60,7 +62,7 @@ int main(int argc, char** argv)
     cin.get(start);
     
     deckInt(t[52]);
-    disDeck(t[52]);
+    gmeStrt(t[52]);
     
     return 0;
 }
@@ -68,115 +70,34 @@ int main(int argc, char** argv)
 //INITIALIZING DECK
 void deckInt(decks& d)
 {
-    //INITIALIZE ARRAY
-    d.rank = 1;
-    d.s[0];
-    
-    //SET SEED
     unsigned seed = time(0);
     srand(seed);
-    
-    //CREATE DECK
-    for(int i = 0; i <= 52; i++)
+    for(int i = 0; i < 52; d.deckTotal[i++] = i)
     {
-        d.s[i] = d.rank++;
-        int num = (rand() % 100) + 1;
+        random_shuffle(&d.deckTotal[0], &d.deckTotal[52]);
     }
-    
-    //SHUFFLE CARDS
-    random_shuffle(&d.s[0], &d.s[52]);
-    
 }
 
-void disDeck(decks& d)
+string getCrd(decks& d)
 {
-    for(int i = 0; i <= 51; i++)
-    {
-        //Labeling Face Cards
-        switch(d.s[i])
-        {
-            //ACES///////////////
-            case 1: 
-                cout << "Ace"; 
-                break;
-            case 14:
-                cout << "Ace";
-                break;
-            case 27:
-                cout << "Ace";
-                break;
-            case 40:
-                cout << "Ace";
-                break;
-            //////////////////////
-            
-            //JACKS///////////////
-            case 11:
-                cout << "Jack";
-                break;
-            case 24:
-                cout << "Jack";
-                break;
-            case 37:
-                cout << "Jack";
-                break;
-            case 50:
-                cout << "Jack";
-                break;    
-            //////////////////////
-                
-            //QUEENS//////////////
-            case 12:
-                cout << "Queen";
-                break;
-            case 25:
-                cout << "Queen";
-                break;
-            case 38:
-                cout << "Queen";
-                break;
-            case 51:
-                cout << "Queen";
-                break;
-            //////////////////////
-            
-            //KINGS///////////////
-            case 13:
-                cout << "King";
-                break;
-            case 26:
-                cout << "King";
-                break;
-            case 39:
-                cout << "King";
-                break;
-            case 52:
-                cout << "King";
-                break;
-            //////////////////////
-                
-            //Numbered Cards
-            default:
-            cout << d.s[i];
-        }
-        
-        
-        if(d.s[i] <= 13)
-        {
-            cout << " of Spades" << endl;
-        }
-        else if(d.s[i] <= 26)
-        {
-            cout << " of Hearts" << endl;
-        }
-        else if(d.s[i] <= 39)
-        {
-            cout << " of Diamonds" << endl;
-        }
-        else if(d.s[i] <= 52)
-        {
-            cout << " of Clubs" << endl;
-        }
-        cout << endl;
-    }
-}And
+    string CRD;
+    int crdVal = rand() % 13;
+    int crdSt = rand() % 4;
+    
+    CRD += d.faceVal[crdVal];
+    CRD += " of ";
+    CRD += d.suit[crdSt];
+    return CRD;
+}
+
+void gmeStrt(decks& d)
+{
+    decks crd;
+    d.plyrScore = 26;
+    d.oppScore = 26;
+    
+    cout << "The deck has been shuffled!" << endl;
+    cout << "Here is your deck!" << endl;
+    cout << getCrd(crd);
+    
+}

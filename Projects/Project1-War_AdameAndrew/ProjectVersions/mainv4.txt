@@ -21,12 +21,14 @@ struct decks
 {
     int rank;           //Rank of Card
     int deckTotal [52]; //Total Deck Array
-    int s[13];          //Suit Array
-    int deckPlyr [26];  //Player Deck
-    int deckOpp [26];   //Opponent Deck
+    //int deckPlyr [26];
+    //int deckOpp [26];
+    int plyrScore;      //Score of Player
+    int oppScore;       //Score of Opponent
 };
        
 void deckInt(decks&);
+void gameStart(decks&);
 void disDeck(decks&);
 int main(int argc, char** argv) 
 {
@@ -60,7 +62,7 @@ int main(int argc, char** argv)
     cin.get(start);
     
     deckInt(t[52]);
-    disDeck(t[52]);
+    gameStart(t[52]);
     
     return 0;
 }
@@ -70,7 +72,7 @@ void deckInt(decks& d)
 {
     //INITIALIZE ARRAY
     d.rank = 1;
-    d.s[0];
+    d.deckTotal[0];
     
     //SET SEED
     unsigned seed = time(0);
@@ -79,21 +81,47 @@ void deckInt(decks& d)
     //CREATE DECK
     for(int i = 0; i <= 52; i++)
     {
-        d.s[i] = d.rank++;
-        int num = (rand() % 100) + 1;
+        d.deckTotal[i] = d.rank++;
+        int num = rand() % 53;
     }
     
     //SHUFFLE CARDS
-    random_shuffle(&d.s[0], &d.s[52]);
+    random_shuffle(&d.deckTotal[0], &d.deckTotal[52]);
     
 }
 
+void gameStart(decks& d)
+{
+    d.plyrScore = 26;
+    d.oppScore = 26;
+    
+    cout << "The deck has been shuffled!" << endl;
+    
+    while(d.plyrScore > 0 || d.oppScore > 0)
+    {
+        char nextRnd;
+        decks plyrCrd[52];
+        decks oppCrd[52];
+        
+        cout << "Press 'ENTER' to Draw a Card!";
+        cin.get(nextRnd);
+        
+        cout << "You drew a ";
+        disDeck(plyrCrd[52]);
+        
+        cout << "Your opponent drew a ";
+        disDeck(plyrCrd[52]);
+           
+    }
+}
+
+
 void disDeck(decks& d)
 {
-    for(int i = 0; i <= 51; i++)
+    for(int i = 0; i <= 52; i++)
     {
         //Labeling Face Cards
-        switch(d.s[i])
+        switch(d.deckTotal[i])
         {
             //ACES///////////////
             case 1: 
@@ -157,26 +185,26 @@ void disDeck(decks& d)
                 
             //Numbered Cards
             default:
-            cout << d.s[i];
+            cout << d.deckTotal[i];
         }
         
         
-        if(d.s[i] <= 13)
+        if(d.deckTotal[i] <= 13)
         {
             cout << " of Spades" << endl;
         }
-        else if(d.s[i] <= 26)
+        else if(d.deckTotal[i] <= 26)
         {
             cout << " of Hearts" << endl;
         }
-        else if(d.s[i] <= 39)
+        else if(d.deckTotal[i] <= 39)
         {
             cout << " of Diamonds" << endl;
         }
-        else if(d.s[i] <= 52)
+        else if(d.deckTotal[i] <= 52)
         {
             cout << " of Clubs" << endl;
         }
         cout << endl;
     }
-}And
+}

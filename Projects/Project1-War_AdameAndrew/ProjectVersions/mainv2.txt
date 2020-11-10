@@ -1,5 +1,5 @@
 /* 
- * File:   main.cpp
+ * File:   mainv1.cpp
  * Author: Andrew Adame
  * Purpose: The purpose of this program is to simulate
  * the card game "War" using a variety of things I have learned
@@ -11,8 +11,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <iomanip>
-#include <ctime>        //For seed
-#include <algorithm>    //For shuffle
+#include <ctime>
+#include <algorithm>
 
 
 using namespace std;
@@ -72,18 +72,15 @@ void deckInt(decks& d)
     d.rank = 1;
     d.s[0];
     
-    //SET SEED
-    unsigned seed = time(0);
-    srand(seed);
-    
     //CREATE DECK
     for(int i = 0; i <= 52; i++)
     {
         d.s[i] = d.rank++;
-        int num = (rand() % 100) + 1;
     }
     
-    //SHUFFLE CARDS
+    //SHUFFLE DECK
+    srand ( unsigned ( std::time(0) ) );
+    int num = (rand() % 100) + 1;
     random_shuffle(&d.s[0], &d.s[52]);
     
 }
@@ -157,7 +154,7 @@ void disDeck(decks& d)
                 
             //Numbered Cards
             default:
-            cout << d.s[i];
+                cout << d.s[i];
         }
         
         
@@ -179,4 +176,6 @@ void disDeck(decks& d)
         }
         cout << endl;
     }
-}And
+    
+    cout << endl;
+}

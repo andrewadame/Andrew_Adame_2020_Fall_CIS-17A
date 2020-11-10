@@ -72,19 +72,13 @@ void deckInt(decks& d)
     d.rank = 1;
     d.s[0];
     
-    //SET SEED
-    unsigned seed = time(0);
-    srand(seed);
     
     //CREATE DECK
     for(int i = 0; i <= 52; i++)
     {
         d.s[i] = d.rank++;
-        int num = (rand() % 100) + 1;
     }
     
-    //SHUFFLE CARDS
-    random_shuffle(&d.s[0], &d.s[52]);
     
 }
 
@@ -179,4 +173,4 @@ void disDeck(decks& d)
         }
         cout << endl;
     }
-}And
+}
